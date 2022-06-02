@@ -1,5 +1,7 @@
-from turtle import position
 import numpy as np
+
+TIME = 0
+
 class Node:
     """A node class for A* Pathfinding"""
 
@@ -31,7 +33,6 @@ def time(char):
         return 200
     return 0
 
-###REVER QUESTAO DE POSICAO (X,Y) (YX)
 def positions_etapas(maze, lista, n):
     v = np.zeros(n, dtype=object) #python sets for anything for array that way
     for x in range(len(maze)):
@@ -61,11 +62,6 @@ def astar(maze, start, end):
     # counter2 = 0
 
     while len(open_list) > 0:
-        # counter2=counter2+1
-        # if(counter2 >3):
-        #     break
-        # Get the current node
-        # print("open: ", open_list)
 
         current_node = open_list[0]
         current_index = 0
@@ -83,6 +79,10 @@ def astar(maze, start, end):
         # Found the goal
         # print('current', current_node)
         if current_node == end_node:
+            global TIME
+            TIME += current_node.t
+            print('TIME', TIME)
+            print('CURRENT NODE', current_node.t)
             path = []
             current = current_node
             while current is not None:
@@ -101,11 +101,7 @@ def astar(maze, start, end):
             # Make sure within range
             if node_position[0] > (len(maze) - 1) or node_position[0] < 0 or node_position[1] > (len(maze[len(maze)-1]) - 1) or node_position[1] < 0:
                 continue
-
-            # Make sure walkable terrain
-            # if maze[node_position[0]][node_position[1]] != 0:
-            #     continue
-
+            
             # Create new node
         
             new_node = Node(current_node, node_position)
@@ -120,7 +116,7 @@ def astar(maze, start, end):
             # Create the f, g, and h values
                 child.g = current_node.g + 1
                 
-                child.t = time(maze[child.position[0]][child.position[1]])
+                child.t = current_node.t + time(maze[child.position[0]][child.position[1]])
                 # Manhattan Distance
                 child.h = abs(child.position[0] - end_node.position[0]) + abs(child.position[1] - end_node.position[1])
                 child.f = child.g + child.h + child.t
